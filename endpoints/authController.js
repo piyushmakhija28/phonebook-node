@@ -2,7 +2,7 @@ const express = require('express');
 
 const jsonWebToken = require('jsonwebtoken');
 
-const userDbFunctions = require('../db/user');
+const userService = require('../services/userService');
 
 const bcrypt = require('bcrypt');
 
@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post('/login', (req, res, next) => {
     let user = {
-        'id':'',
+        'id': '',
         'firstName': '',
         'lastName': '',
         'mobileNumber': '',
@@ -18,7 +18,7 @@ router.post('/login', (req, res, next) => {
         'username': '',
         'password': ''
     }
-    userDbFunctions.login(req.body.username).then(response => {
+    userService.login(req.body.username).then(response => {
         if (response.length > 0) {
             const userObject = response[0];
             user.id = userObject.id;
@@ -26,12 +26,11 @@ router.post('/login', (req, res, next) => {
             user.lastName = userObject.last_name;
             user.mobileNumber = userObject.mobile_number;
             user.email = userObject.email;
-            user.username = userObject.username;
-            let data = Object.fromEntries(Object.entries(user).filter(([k,v]) => v));
+            let data = Object.fromEntries(Object.entries(user).filter(([k, v]) => v));
             data.token = jsonWebToken.sign({
-                id : user.id
-            },'JWT-SECRET',{    
-                expiresIn : '1h'
+                id: user.id
+            }, 'JWT-SECRET', {
+                expiresIn: '1h'
             });
             if (userObject.is_active) {
                 if (bcrypt.compareSync(req.body.password, userObject.password)) {

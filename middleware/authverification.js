@@ -1,6 +1,6 @@
 const jsonWebToken = require('jsonwebtoken');
 
-const { existById } = require('../db/user');
+const { existById } = require('../services/userService');
 
 function verifyToken(req, res, next) {
     console.log(req.headers);
@@ -21,7 +21,7 @@ function verifyToken(req, res, next) {
                     }
                 });
             }
-        })
+        });
     } else {
         return res.status(403).json({
             'success': false,
@@ -32,4 +32,11 @@ function verifyToken(req, res, next) {
     }
 };
 
-module.exports = verifyToken;
+function getUserIdFromToken(req,res,next){
+    return jsonWebToken.verify(req.headers.authorization.split(' ')[1], 'JWT-SECRET', (err, decode) => {
+        console.log(decode.id);
+        return decode.id;
+    })
+}
+
+module.exports = { verifyToken,  getUserIdFromToken };

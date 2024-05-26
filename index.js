@@ -12,6 +12,8 @@ const userController = require('./endpoints/userController');
 
 const authController = require('./endpoints/authController');
 
+const contactController = require('./endpoints/contactController');
+
 const app = express();
 
 app.use(express.json());
@@ -23,6 +25,8 @@ app.use(cors());
 app.use('/api/v1/users', userController);
 
 app.use('/api/v1/auth', authController);
+
+app.use('/api/v1/contacts', contactController);
 
 const options = {
     definition: {

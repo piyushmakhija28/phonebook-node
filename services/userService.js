@@ -1,4 +1,4 @@
-const sql = require('./db');
+const sql = require('./dbService');
 
 const saveUser = async function saveUser(user) {
     return await sql`insert into users (first_name,last_name,mobile_number,email,username,password) values (${user.firstName},${user.lastName},${user.mobileNumber},${user.email},${user.username},${user.password})`;

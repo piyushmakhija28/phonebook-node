@@ -1,6 +1,6 @@
 const express = require('express');
 
-const userDbFunctions = require('../db/user');
+const userDbFunctions = require('../services/userService');
 
 const verifyToken = require('../middleware/authverification');
 
@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 
 const router = express.Router();
 
-router.post('', verifyToken, (req, res, next) => {
+router.post('', (req, res, next) => {
     let user = {
         'id': '',
         'firstName': '',
@@ -43,7 +43,16 @@ router.post('', verifyToken, (req, res, next) => {
     });
 });
 
-router.put('/:id', verifyToken, (req, res, next) => {
+router.put('/:id', verifyToken.verifyToken, (req, res, next) => {
+    var userId = verifyToken.getUserIdFromToken(req, res, next);
+    if (userId != 1) {
+        return res.status(401).json({
+            'success': false,
+            'message': 'Your are not authorized to access this endpoint.',
+            'status': 401,
+            'timestamp': Date.now()
+        });
+    }
     user.firstName = req.body.firstName;
     user.lastName = req.body.lastName;
     user.mobileNumber = req.body.mobileNumber;
@@ -67,7 +76,16 @@ router.put('/:id', verifyToken, (req, res, next) => {
     });
 });
 
-router.get('/:limit/:offset', verifyToken, (req, res, next) => {
+router.get('/:limit/:offset', verifyToken.verifyToken, (req, res, next) => {
+    var userId = verifyToken.getUserIdFromToken(req, res, next);
+    if (userId != 1) {
+        return res.status(401).json({
+            'success': false,
+            'message': 'Your are not authorized to access this endpoint.',
+            'status': 401,
+            'timestamp': Date.now()
+        });
+    }
     userDbFunctions.getUsers(req.params.limit, req.params.offset).then(response => {
         res.status(200).json({
             'data': response,
@@ -87,7 +105,16 @@ router.get('/:limit/:offset', verifyToken, (req, res, next) => {
     });
 });
 
-router.get('/:id', verifyToken, (req, res, next) => {
+router.get('/:id', verifyToken.verifyToken, (req, res, next) => {
+    var userId = verifyToken.getUserIdFromToken(req, res, next);
+    if (userId != 1) {
+        return res.status(401).json({
+            'success': false,
+            'message': 'Your are not authorized to access this endpoint.',
+            'status': 401,
+            'timestamp': Date.now()
+        });
+    }
     userDbFunctions.getUser(req.params.id).then(response => {
         res.status(200).json({
             'data': response[0],
@@ -107,7 +134,16 @@ router.get('/:id', verifyToken, (req, res, next) => {
     });
 });
 
-router.delete('/:id', verifyToken, (req, res, next) => {
+router.delete('/:id', verifyToken.verifyToken, (req, res, next) => {
+    var userId = verifyToken.getUserIdFromToken(req, res, next);
+    if (userId != 1) {
+        return res.status(401).json({
+            'success': false,
+            'message': 'Your are not authorized to access this endpoint.',
+            'status': 401,
+            'timestamp': Date.now()
+        });
+    }
     userDbFunctions.deleteUser(req.params.id).then(response => {
         res.status(200).json({
             'success': true,
@@ -126,7 +162,16 @@ router.delete('/:id', verifyToken, (req, res, next) => {
     });
 });
 
-router.patch('/activate/:id', verifyToken, (req, res, next) => {
+router.patch('/activate/:id', verifyToken.verifyToken, (req, res, next) => {
+    var userId = verifyToken.getUserIdFromToken(req, res, next);
+    if (userId != 1) {
+        return res.status(401).json({
+            'success': false,
+            'message': 'Your are not authorized to access this endpoint.',
+            'status': 401,
+            'timestamp': Date.now()
+        });
+    }
     userDbFunctions.activateUser(req.params.id).then(response => {
         res.status(200).json({
             'success': true,
@@ -145,7 +190,16 @@ router.patch('/activate/:id', verifyToken, (req, res, next) => {
     });
 });
 
-router.patch('/deActivate/:id', verifyToken, (req, res, next) => {
+router.patch('/deActivate/:id', verifyToken.verifyToken, (req, res, next) => {
+    var userId = verifyToken.getUserIdFromToken(req, res, next);
+    if (userId != 1) {
+        return res.status(401).json({
+            'success': false,
+            'message': 'Your are not authorized to access this endpoint.',
+            'status': 401,
+            'timestamp': Date.now()
+        });
+    }
     userDbFunctions.deActivateUser(req.params.id).then(response => {
         res.status(200).json({
             'success': true,
